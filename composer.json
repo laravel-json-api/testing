@@ -5,7 +5,6 @@
         "jsonapi.org",
         "json-api",
         "jsonapi",
-        "json:api",
         "laravel"
     ],
     "homepage": "https://github.com/laravel-json-api/eloquent",
@@ -21,12 +20,6 @@
         {
             "name": "Christopher Gammie",
             "email": "contact@gammie.co.uk"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../core"
         }
     ],
     "require": {
