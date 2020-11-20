@@ -17,7 +17,7 @@
 
 namespace LaravelJsonApi\Testing;
 
-use LaravelJsonApi\Laravel\Exceptions\ExceptionParser;
+use LaravelJsonApi\Exceptions\ExceptionParser;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 /**
