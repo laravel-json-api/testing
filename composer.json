@@ -31,6 +31,7 @@
         "illuminate/testing": "^8.0"
     },
     "require-dev": {
+        "laravel/framework": "^8.0",
         "phpunit/phpunit": "^9.5"
     },
     "autoload": {

@@ -257,14 +257,12 @@ final class TestBuilder
     /**
      * Set the request payload for a non-JSON API request.
      *
-     * @param mixed $parameters
+     * @param mixed $payload
      * @return $this
      */
-    public function withPayload($parameters): self
+    public function withPayload($payload): self
     {
-        $this->payload = collect($parameters);
-        // we need a content length as it is used by the JSON API implementation to determine if there is body.
-        $this->headers['CONTENT_LENGTH'] = '1';
+        $this->payload = collect($payload);
 
         return $this;
     }
@@ -365,9 +363,13 @@ final class TestBuilder
         $headers = $this->buildHeaders($headers);
 
         if ($this->payload) {
+            $payload = $this->payload->toArray();
+            // we need a content length as it is used by the JSON API implementation to determine if there is body.
+            $headers['CONTENT_LENGTH'] = $headers['CONTENT_LENGTH'] ?? mb_strlen(Arr::query($payload), '8bit');
+
             $response = $this->test->{strtolower($method)}(
                 $uri,
-                $this->payload->toArray(),
+                $payload,
                 $headers
             );
         } else {
