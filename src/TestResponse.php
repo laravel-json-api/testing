@@ -22,11 +22,6 @@ use CloudCreativity\JsonApi\Testing\Document;
 use Illuminate\Testing\TestResponse as BaseTestResponse;
 use Illuminate\Http\Response;
 
-/**
- * Class TestResponse
- *
- * @package CloudCreativity\LaravelJsonApi
- */
 class TestResponse extends BaseTestResponse
 {
 

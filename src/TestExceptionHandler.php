@@ -41,7 +41,6 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
  * }
  * ```
  *
- * @package CloudCreativity\LaravelJsonApi
  */
 class TestExceptionHandler extends ExceptionHandler
 {
