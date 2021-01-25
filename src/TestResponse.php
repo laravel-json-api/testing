@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2020 Cloud Creativity Limited
+/*
+ * Copyright 2021 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ namespace LaravelJsonApi\Testing;
 
 use CloudCreativity\JsonApi\Testing\Concerns\HasHttpAssertions;
 use CloudCreativity\JsonApi\Testing\Document;
-use Illuminate\Testing\TestResponse as BaseTestResponse;
 use Illuminate\Http\Response;
+use Illuminate\Testing\TestResponse as BaseTestResponse;
 
 class TestResponse extends BaseTestResponse
 {
