@@ -1,15 +1,15 @@
 {
     "name": "laravel-json-api/testing",
-    "description": "Test helpers for JSON API compliant APIs.",
+    "description": "Test helpers for JSON:API compliant APIs.",
     "keywords": [
         "jsonapi.org",
         "json-api",
         "jsonapi",
         "laravel"
     ],
-    "homepage": "https://github.com/laravel-json-api/eloquent",
+    "homepage": "https://github.com/laravel-json-api/testing",
     "support": {
-        "issues": "https://github.com/laravel-json-api/eloquent/issues"
+        "issues": "https://github.com/laravel-json-api/testing/issues"
     },
     "license": "Apache-2.0",
     "authors": [
@@ -23,11 +23,16 @@
         }
     ],
     "require": {
-        "php": "^7.4",
-        "ext-json": "*"
+        "php": "^7.4|^8.0",
+        "ext-json": "*",
+        "cloudcreativity/json-api-testing": "^3.2",
+        "illuminate/http": "^8.0",
+        "illuminate/support": "^8.0",
+        "illuminate/testing": "^8.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.4"
+        "laravel/framework": "^8.0",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
@@ -41,11 +46,10 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.x-dev",
             "dev-develop": "1.x-dev"
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
