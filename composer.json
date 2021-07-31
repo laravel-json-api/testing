@@ -25,7 +25,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
-        "cloudcreativity/json-api-testing": "^3.2",
+        "cloudcreativity/json-api-testing": "^3.3",
         "illuminate/http": "^8.0",
         "illuminate/support": "^8.0",
         "illuminate/testing": "^8.0"
@@ -49,7 +49,7 @@
             "dev-develop": "1.x-dev"
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
