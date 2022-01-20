@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Added
 
+- Package now supports Laravel 9.
 - Added support for `cloudcreativity/json-api-testing` version 4.0.
 
 ## [1.0.0] - 2021-07-31
