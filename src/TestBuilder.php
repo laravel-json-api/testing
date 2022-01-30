@@ -17,13 +17,13 @@
 
 namespace LaravelJsonApi\Testing;
 
+use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use function array_walk_recursive;
-use function collect;
 use function implode;
 use function is_bool;
 use function is_null;
@@ -31,7 +31,6 @@ use function is_scalar;
 
 final class TestBuilder
 {
-
     /**
      * @var TestCase|mixed
      */
@@ -81,8 +80,8 @@ final class TestBuilder
     {
         $this->test = $test;
         $this->accept = $this->contentType = 'application/vnd.api+json';
-        $this->query = collect();
-        $this->headers = collect();
+        $this->query = new Collection();
+        $this->headers = new Collection();
     }
 
     /**
@@ -154,7 +153,7 @@ final class TestBuilder
      */
     public function query(iterable $query): self
     {
-        $this->query = collect($query)->merge($query);
+        $this->query = Collection::make($query)->merge($query);
 
         return $this;
     }
@@ -181,7 +180,7 @@ final class TestBuilder
      */
     public function sparseFields(string $resourceType, $fieldNames): self
     {
-        $this->query['fields'] = collect($this->query->get('fields'))
+        $this->query['fields'] = Collection::make($this->query->get('fields'))
             ->put($resourceType, implode(',', Arr::wrap($fieldNames)));
 
         return $this;
@@ -195,9 +194,35 @@ final class TestBuilder
      */
     public function filter(iterable $filter): self
     {
-        $this->query['filter'] = collect($filter);
+        $allFilters = Collection::make(
+            $this->query->get('filter')
+        )->merge($filter);
+
+        $this->query['filter'] = $allFilters;
 
         return $this;
+    }
+
+    /**
+     * Set the values of an 'id' filter.
+     *
+     * This helper method allows you to set an id filter using an iterable of UrlRoutable
+     * objects (i.e. models).
+     *
+     * @param iterable $ids
+     * @param string $key
+     *      the filter key for the id filter.
+     * @return $this
+     */
+    public function filterIds(iterable $ids, string $key = 'id'): self
+    {
+        $ids = Collection::make($ids)->map(
+            static fn($modelOrId) => ($modelOrId instanceof UrlRoutable)
+                ? (string) $modelOrId->getRouteKey()
+                : $modelOrId
+        )->all();
+
+        return $this->filter([$key => $ids]);
     }
 
     /**
@@ -221,7 +246,7 @@ final class TestBuilder
      */
     public function page(iterable $page): self
     {
-        $this->query['page'] = collect($page);
+        $this->query['page'] = Collection::make($page);
 
         return $this;
     }
@@ -238,7 +263,7 @@ final class TestBuilder
             return $this->withJson(['data' => null]);
         }
 
-        return $this->withJson(['data' => collect($data)]);
+        return $this->withJson(['data' => Collection::make($data)]);
     }
 
     /**
@@ -249,7 +274,7 @@ final class TestBuilder
      */
     public function withJson($json): self
     {
-        $this->json = collect($json);
+        $this->json = Collection::make($json);
 
         return $this;
     }
@@ -262,7 +287,7 @@ final class TestBuilder
      */
     public function withPayload($payload): self
     {
-        $this->payload = collect($payload);
+        $this->payload = Collection::make($payload);
 
         return $this;
     }
@@ -420,7 +445,7 @@ final class TestBuilder
      */
     private function buildHeaders(iterable $headers): array
     {
-        return collect(['Accept' => $this->accept, 'CONTENT_TYPE' => $this->contentType])
+        return Collection::make(['Accept' => $this->accept, 'CONTENT_TYPE' => $this->contentType])
             ->filter()
             ->merge($this->headers)
             ->merge($headers)

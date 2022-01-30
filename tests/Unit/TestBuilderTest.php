@@ -19,9 +19,11 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Testing\Tests\Unit;
 
+use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse as IlluminateTestResponse;
 use LaravelJsonApi\Testing\TestBuilder;
@@ -445,6 +447,49 @@ class TestBuilderTest extends TestCase
         $query = [
             'filter' => [
                 'published' => 'true',
+                'foo' => 'bar',
+                'baz' => 'bat',
+            ],
+        ];
+
+        $expected = '/api/v1/posts?' . Arr::query($query);
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('GET', $expected, [], $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->filter(['published' => 'true', 'foo' => 'bar'])
+            ->filter(['baz' => 'bat'])
+            ->get('/api/v1/posts');
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
+    public function testFilterIds(): void
+    {
+        $model1 = $this->createMock(UrlRoutable::class);
+        $model1->method('getRouteKey')->willReturn(1);
+
+        $model2 = $this->createMock(UrlRoutable::class);
+        $model2->method('getRouteKey')->willReturn(2);
+
+        $model3 = $this->createMock(UrlRoutable::class);
+        $model3->method('getRouteKey')->willReturn(3);
+
+        $headers = [
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $query = [
+            'filter' => [
+                'published' => 'true',
+                'id' => ['1', '2', '3'],
+                'foo' => 'bar',
             ],
         ];
 
@@ -459,6 +504,47 @@ class TestBuilderTest extends TestCase
         $response = $this->builder
             ->expects('posts')
             ->filter(['published' => 'true'])
+            ->filterIds([$model1, $model2, $model3])
+            ->filter(['foo' => 'bar'])
+            ->get('/api/v1/posts');
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
+    public function testFilterIdsWithIdKey(): void
+    {
+        $model1 = $this->createMock(UrlRoutable::class);
+        $model1->method('getRouteKey')->willReturn(1);
+
+        $model2 = $this->createMock(UrlRoutable::class);
+        $model2->method('getRouteKey')->willReturn(2);
+
+        $headers = [
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $query = [
+            'filter' => [
+                'published' => 'true',
+                'ids' => ['1', '2'],
+                'foo' => 'bar',
+            ],
+        ];
+
+        $expected = '/api/v1/posts?' . Arr::query($query);
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('GET', $expected, [], $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->filter(['published' => 'true'])
+            ->filterIds(new Collection([$model1, $model2]), 'ids')
+            ->filter(['foo' => 'bar'])
             ->get('/api/v1/posts');
 
         $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
