@@ -204,17 +204,38 @@ final class TestBuilder
     }
 
     /**
-     * Set the values of an 'id' filter.
+     * Set the value of a filter using an id value.
      *
-     * This helper method allows you to set an id filter using an iterable of UrlRoutable
-     * objects (i.e. models).
+     * This helper method allows the developer to pass a UrlRoutable (i.e. model) as the
+     * id value.
      *
-     * @param iterable $ids
      * @param string $key
-     *      the filter key for the id filter.
+     *      the filter key.
+     * @param UrlRoutable|string|int $id
      * @return $this
      */
-    public function filterIds(iterable $ids, string $key = 'id'): self
+    public function filterId(string $key, $id): self
+    {
+        if ($id instanceof UrlRoutable) {
+            $id = $id->getRouteKey();
+        }
+
+        return $this->filter([$key => $id]);
+    }
+
+    /**
+     * Set the value of a filter using an iterable of ids.
+     *
+     * This helper method allows the developer to pass UrlRoutable objects (i.e. models)
+     * in the iterable value.
+     *
+     * @param string $key
+     *      the filter key.
+     * @param iterable $ids
+     *      the id values.
+     * @return $this
+     */
+    public function filterIds(string $key, iterable $ids): self
     {
         $ids = Collection::make($ids)->map(
             static fn($modelOrId) => ($modelOrId instanceof UrlRoutable)
