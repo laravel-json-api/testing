@@ -12,6 +12,14 @@ All notable changes to this project will be documented in this file. This projec
 - Filter values passed to the test builder `filter()` method can now include `UrlRoutable` objects (i.e. models).
   Routable objects are converted to their route key for the filter value.
 
+### Deprecated
+
+- The following page assertions will be removed in the next major release. You should use the fluent methods instead to
+  assert the resources fetched, meta and links. Deprecated methods are:
+  - `assertFetchedPage()` - use `assertFetchedMany()`, `assertMeta()` and `assertLinks()`.
+  - `assertFetchedPageInOrder()` - use `assertFetchedManyInOrder()`, `assertMeta()` and `assertLinks()`.
+  - `assertFetchedEmptyPage()` - use `assertFetchedNone()`, `assertMeta()` and `assertLinks()`.
+
 ## [1.0.0] - 2021-07-31
 
 ### Changed
