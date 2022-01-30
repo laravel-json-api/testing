@@ -448,7 +448,6 @@ class TestBuilderTest extends TestCase
             'filter' => [
                 'published' => 'true',
                 'foo' => 'bar',
-                'baz' => 'bat',
             ],
         ];
 
@@ -463,7 +462,6 @@ class TestBuilderTest extends TestCase
         $response = $this->builder
             ->expects('posts')
             ->filter(['published' => 'true', 'foo' => 'bar'])
-            ->filter(['baz' => 'bat'])
             ->get('/api/v1/posts');
 
         $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
@@ -503,7 +501,6 @@ class TestBuilderTest extends TestCase
             'filter' => [
                 'published' => 'true',
                 'author' => '1',
-                'foo' => 'bar',
             ],
         ];
 
@@ -517,14 +514,15 @@ class TestBuilderTest extends TestCase
 
         $response = $this->builder
             ->expects('posts')
-            ->filter(['published' => 'true'])
-            ->filterId('author', $value)
-            ->filter(['foo' => 'bar'])
+            ->filter(['published' => 'true', 'author' => $value])
             ->get('/api/v1/posts');
 
         $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
     }
 
+    /**
+     * @return array
+     */
     public function idsProvider(): array
     {
         return [
@@ -565,7 +563,6 @@ class TestBuilderTest extends TestCase
             'filter' => [
                 'published' => 'true',
                 'id' => ['1', '2', '3'],
-                'foo' => 'bar',
             ],
         ];
 
@@ -579,9 +576,7 @@ class TestBuilderTest extends TestCase
 
         $response = $this->builder
             ->expects('posts')
-            ->filter(['published' => 'true'])
-            ->filterIds('id', $values)
-            ->filter(['foo' => 'bar'])
+            ->filter(['published' => 'true', 'id' => $values])
             ->get('/api/v1/posts');
 
         $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
@@ -592,7 +587,7 @@ class TestBuilderTest extends TestCase
      * @return void
      * @dataProvider idsProvider
      */
-    public function testFilterIdsWithIdKey(\Closure $scenario): void
+    public function testFilterIdsWithCollection(\Closure $scenario): void
     {
         $values = $scenario($this);
 
@@ -605,7 +600,6 @@ class TestBuilderTest extends TestCase
             'filter' => [
                 'published' => 'true',
                 'ids' => ['1', '2', '3'],
-                'foo' => 'bar',
             ],
         ];
 
@@ -619,9 +613,7 @@ class TestBuilderTest extends TestCase
 
         $response = $this->builder
             ->expects('posts')
-            ->filter(['published' => 'true'])
-            ->filterIds('ids', new Collection($values))
-            ->filter(['foo' => 'bar'])
+            ->filter(['published' => 'true', 'ids' => new Collection($values)])
             ->get('/api/v1/posts');
 
         $this->assertEquals(new TestResponse($this->response, 'posts'), $response);

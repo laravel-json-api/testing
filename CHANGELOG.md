@@ -9,9 +9,8 @@ All notable changes to this project will be documented in this file. This projec
 
 - Package now supports Laravel 9.
 - Added support for `cloudcreativity/json-api-testing` version 4.0.
-- The test builder `filter()` method can now be called multiple times, with filters merged into existing filters.
-- New test builder helper methods `filterId()` and `filterIds()`. These can be used to set a filter value using
-  `UrlRoutable` objects (i.e. models).
+- Filter values passed to the test builder `filter()` method can now include `UrlRoutable` objects (i.e. models).
+  Routable objects are converted to their route key for the filter value.
 
 ## [1.0.0] - 2021-07-31
 

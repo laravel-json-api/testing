@@ -194,56 +194,9 @@ final class TestBuilder
      */
     public function filter(iterable $filter): self
     {
-        $allFilters = Collection::make(
-            $this->query->get('filter')
-        )->merge($filter);
-
-        $this->query['filter'] = $allFilters;
+        $this->query['filter'] = $this->convertIds($filter);
 
         return $this;
-    }
-
-    /**
-     * Set the value of a filter using an id value.
-     *
-     * This helper method allows the developer to pass a UrlRoutable (i.e. model) as the
-     * id value.
-     *
-     * @param string $key
-     *      the filter key.
-     * @param UrlRoutable|string|int $id
-     * @return $this
-     */
-    public function filterId(string $key, $id): self
-    {
-        if ($id instanceof UrlRoutable) {
-            $id = $id->getRouteKey();
-        }
-
-        return $this->filter([$key => $id]);
-    }
-
-    /**
-     * Set the value of a filter using an iterable of ids.
-     *
-     * This helper method allows the developer to pass UrlRoutable objects (i.e. models)
-     * in the iterable value.
-     *
-     * @param string $key
-     *      the filter key.
-     * @param iterable $ids
-     *      the id values.
-     * @return $this
-     */
-    public function filterIds(string $key, iterable $ids): self
-    {
-        $ids = Collection::make($ids)->map(
-            static fn($modelOrId) => ($modelOrId instanceof UrlRoutable)
-                ? (string) $modelOrId->getRouteKey()
-                : $modelOrId
-        )->all();
-
-        return $this->filter([$key => $ids]);
     }
 
     /**
@@ -471,5 +424,32 @@ final class TestBuilder
             ->merge($this->headers)
             ->merge($headers)
             ->toArray();
+    }
+
+    /**
+     * @param iterable $values
+     * @return Collection
+     */
+    private function convertIds(iterable $values): Collection
+    {
+        return Collection::make($values)
+            ->map(fn($value) => $this->convertId($value));
+    }
+
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    private function convertId($value)
+    {
+        if ($value instanceof UrlRoutable) {
+            return $value->getRouteKey();
+        }
+
+        if (is_iterable($value)) {
+            return $this->convertIds($value);
+        }
+
+        return $value;
     }
 }
