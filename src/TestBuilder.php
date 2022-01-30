@@ -153,7 +153,15 @@ final class TestBuilder
      */
     public function query(iterable $query): self
     {
-        $this->query = Collection::make($query)->merge($query);
+        $query = Collection::make($query);
+
+        foreach (['filter', 'page'] as $key) {
+            if ($value = $query->get($key)) {
+                $query->put($key, $this->convertIds($value));
+            }
+        }
+
+        $this->query = $this->query->merge($query);
 
         return $this;
     }
@@ -220,7 +228,7 @@ final class TestBuilder
      */
     public function page(iterable $page): self
     {
-        $this->query['page'] = Collection::make($page);
+        $this->query['page'] = $this->convertIds($page);
 
         return $this;
     }
@@ -432,8 +440,9 @@ final class TestBuilder
      */
     private function convertIds(iterable $values): Collection
     {
-        return Collection::make($values)
-            ->map(fn($value) => $this->convertId($value));
+        return Collection::make($values)->map(
+            fn($value) => $this->convertId($value)
+        );
     }
 
     /**

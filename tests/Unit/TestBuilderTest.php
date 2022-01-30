@@ -521,6 +521,43 @@ class TestBuilderTest extends TestCase
     }
 
     /**
+     * @param \Closure $scenario
+     * @return void
+     * @dataProvider idProvider
+     */
+    public function testFilterIdInQuery(\Closure $scenario): void
+    {
+        $value = $scenario($this);
+
+        $headers = [
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $query = [
+            'filter' => [
+                'published' => 'true',
+                'author' => '1',
+            ],
+        ];
+
+        $expected = '/api/v1/posts?' . Arr::query($query);
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('GET', $expected, [], $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->query(['filter' => ['published' => 'true', 'author' => $value]])
+            ->get('/api/v1/posts');
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
+    /**
      * @return array
      */
     public function idsProvider(): array
@@ -619,6 +656,43 @@ class TestBuilderTest extends TestCase
         $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
     }
 
+    /**
+     * @param \Closure $scenario
+     * @return void
+     * @dataProvider idsProvider
+     */
+    public function testFilterIdsInQuery(\Closure $scenario): void
+    {
+        $values = $scenario($this);
+
+        $headers = [
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $query = [
+            'filter' => [
+                'published' => 'true',
+                'ids' => ['1', '2', '3'],
+            ],
+        ];
+
+        $expected = '/api/v1/posts?' . Arr::query($query);
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('GET', $expected, [], $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->query(['filter' => ['published' => 'true', 'ids' => $values]])
+            ->get('/api/v1/posts');
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
     public function testSort(): void
     {
         $headers = [
@@ -641,6 +715,110 @@ class TestBuilderTest extends TestCase
         $response = $this->builder
             ->expects('posts')
             ->sort('-publishedAt', 'title')
+            ->get('/api/v1/posts');
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
+    public function testPage(): void
+    {
+        $headers = [
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $query = [
+            'page' => [
+                'number' => '2',
+                'size' => '10',
+            ],
+        ];
+
+        $expected = '/api/v1/posts?' . Arr::query($query);
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('GET', $expected, [], $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->page(['number' => '2', 'size' => '10'])
+            ->get('/api/v1/posts');
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
+    /**
+     * @param \Closure $scenario
+     * @return void
+     * @dataProvider idProvider
+     */
+    public function testPageId(\Closure $scenario): void
+    {
+        $value = $scenario($this);
+
+        $headers = [
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $query = [
+            'page' => [
+                'after' => '1',
+                'size' => '10',
+            ],
+        ];
+
+        $expected = '/api/v1/posts?' . Arr::query($query);
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('GET', $expected, [], $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->page(['after' => $value, 'size' => '10'])
+            ->get('/api/v1/posts');
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
+    /**
+     * @param \Closure $scenario
+     * @return void
+     * @dataProvider idProvider
+     */
+    public function testPageIdInQuery(\Closure $scenario): void
+    {
+        $value = $scenario($this);
+
+        $headers = [
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $query = [
+            'page' => [
+                'after' => '1',
+                'size' => '10',
+            ],
+        ];
+
+        $expected = '/api/v1/posts?' . Arr::query($query);
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('GET', $expected, [], $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->query(['page' => ['after' => $value, 'size' => '10']])
             ->get('/api/v1/posts');
 
         $this->assertEquals(new TestResponse($this->response, 'posts'), $response);

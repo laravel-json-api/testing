@@ -9,8 +9,9 @@ All notable changes to this project will be documented in this file. This projec
 
 - Package now supports Laravel 9.
 - Added support for `cloudcreativity/json-api-testing` version 4.0.
-- Filter values passed to the test builder `filter()` method can now include `UrlRoutable` objects (i.e. models).
-  Routable objects are converted to their route key for the filter value.
+- Values passed to the test builder `filter()` and `page` methods can now include `UrlRoutable` objects (i.e. models).
+  Routable objects are converted to their route key value. This also applies when a filter or page value is set via the
+  `query()` method.
 
 ### Deprecated
 
