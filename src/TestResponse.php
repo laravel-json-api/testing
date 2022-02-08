@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2021 Cloud Creativity Limited
+ * Copyright 2022 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,6 +125,7 @@ class TestResponse extends BaseTestResponse
      * @param string|null $metaKey
      * @param bool $strict
      * @return $this
+     * @deprecated 2.0 use `$response->assertFetchedMany($expected)->assertMeta($meta)->assertLinks($links)`.
      */
     public function assertFetchedPage(
         $expected,
@@ -148,6 +149,7 @@ class TestResponse extends BaseTestResponse
      * @param string|null $metaKey
      * @param bool $strict
      * @return $this
+     * @deprecated 2.0 use `$response->assertFetchedManyInOrder($expected)->assertMeta($meta)->assertLinks($links)`.
      */
     public function assertFetchedPageInOrder(
         $expected,
@@ -170,6 +172,7 @@ class TestResponse extends BaseTestResponse
      * @param string|null $metaKey
      * @param bool $strict
      * @return $this
+     * @deprecated 2.0 use `$response->assertFetchedNone()->assertMeta($meta)->assertLinks($links).
      */
     public function assertFetchedEmptyPage(
         ?array $links,
@@ -202,6 +205,7 @@ class TestResponse extends BaseTestResponse
      * @param bool $strict
      * @param bool $order
      * @return void
+     * @deprecated 2.0
      */
     private function assertPage(
         $expected,

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2021 Cloud Creativity Limited
+ * Copyright 2022 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 
 namespace LaravelJsonApi\Testing;
 
+use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use function array_walk_recursive;
-use function collect;
 use function implode;
 use function is_bool;
 use function is_null;
@@ -31,7 +31,6 @@ use function is_scalar;
 
 final class TestBuilder
 {
-
     /**
      * @var TestCase|mixed
      */
@@ -81,8 +80,8 @@ final class TestBuilder
     {
         $this->test = $test;
         $this->accept = $this->contentType = 'application/vnd.api+json';
-        $this->query = collect();
-        $this->headers = collect();
+        $this->query = new Collection();
+        $this->headers = new Collection();
     }
 
     /**
@@ -154,7 +153,15 @@ final class TestBuilder
      */
     public function query(iterable $query): self
     {
-        $this->query = collect($query)->merge($query);
+        $query = Collection::make($query);
+
+        foreach (['filter', 'page'] as $key) {
+            if ($value = $query->get($key)) {
+                $query->put($key, $this->convertIds($value));
+            }
+        }
+
+        $this->query = $this->query->merge($query);
 
         return $this;
     }
@@ -181,7 +188,7 @@ final class TestBuilder
      */
     public function sparseFields(string $resourceType, $fieldNames): self
     {
-        $this->query['fields'] = collect($this->query->get('fields'))
+        $this->query['fields'] = Collection::make($this->query->get('fields'))
             ->put($resourceType, implode(',', Arr::wrap($fieldNames)));
 
         return $this;
@@ -195,7 +202,7 @@ final class TestBuilder
      */
     public function filter(iterable $filter): self
     {
-        $this->query['filter'] = collect($filter);
+        $this->query['filter'] = $this->convertIds($filter);
 
         return $this;
     }
@@ -221,7 +228,7 @@ final class TestBuilder
      */
     public function page(iterable $page): self
     {
-        $this->query['page'] = collect($page);
+        $this->query['page'] = $this->convertIds($page);
 
         return $this;
     }
@@ -238,7 +245,7 @@ final class TestBuilder
             return $this->withJson(['data' => null]);
         }
 
-        return $this->withJson(['data' => collect($data)]);
+        return $this->withJson(['data' => Collection::make($data)]);
     }
 
     /**
@@ -249,7 +256,7 @@ final class TestBuilder
      */
     public function withJson($json): self
     {
-        $this->json = collect($json);
+        $this->json = Collection::make($json);
 
         return $this;
     }
@@ -262,7 +269,7 @@ final class TestBuilder
      */
     public function withPayload($payload): self
     {
-        $this->payload = collect($payload);
+        $this->payload = Collection::make($payload);
 
         return $this;
     }
@@ -420,10 +427,38 @@ final class TestBuilder
      */
     private function buildHeaders(iterable $headers): array
     {
-        return collect(['Accept' => $this->accept, 'CONTENT_TYPE' => $this->contentType])
+        return Collection::make(['Accept' => $this->accept, 'CONTENT_TYPE' => $this->contentType])
             ->filter()
             ->merge($this->headers)
             ->merge($headers)
             ->toArray();
+    }
+
+    /**
+     * @param iterable $values
+     * @return Collection
+     */
+    private function convertIds(iterable $values): Collection
+    {
+        return Collection::make($values)->map(
+            fn($value) => $this->convertId($value)
+        );
+    }
+
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    private function convertId($value)
+    {
+        if ($value instanceof UrlRoutable) {
+            return $value->getRouteKey();
+        }
+
+        if (is_iterable($value)) {
+            return $this->convertIds($value);
+        }
+
+        return $value;
     }
 }

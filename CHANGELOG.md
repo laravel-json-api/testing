@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [1.1.0] - 2022-02-08
+
+### Added
+
+- Package now supports Laravel 9.
+- Added support for `cloudcreativity/json-api-testing` version 4.0.
+- Values passed to the test builder `filter()` and `page` methods can now include `UrlRoutable` objects (i.e. models).
+  Routable objects are converted to their route key value. This also applies when a filter or page value is set via the
+  `query()` method.
+
+### Deprecated
+
+- The following page assertions will be removed in the next major release. You should use the fluent methods instead to
+  assert the resources fetched, meta and links. Deprecated methods are:
+  - `assertFetchedPage()` - use `assertFetchedMany()`, `assertMeta()` and `assertLinks()`.
+  - `assertFetchedPageInOrder()` - use `assertFetchedManyInOrder()`, `assertMeta()` and `assertLinks()`.
+  - `assertFetchedEmptyPage()` - use `assertFetchedNone()`, `assertMeta()` and `assertLinks()`.
+
 ## [1.0.0] - 2021-07-31
 
 ### Changed
