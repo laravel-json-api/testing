@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+### Fixed
+
+- The Symfony response class can return `false` for the response content. This caused a fatal error when the content
+  was passed to JSON:API assertions - as the assertion methods type-hint the content as a `string` in version 4 of that
+  dependency. This has been fixed by adding a `TestResponse::getContent()` method that returns an empty string if the
+  Symfony method returns `false`.
+
 ## [1.1.0] - 2022-02-08
 
 ### Added
