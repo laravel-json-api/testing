@@ -24,7 +24,6 @@ use Illuminate\Testing\TestResponse as BaseTestResponse;
 
 class TestResponse extends BaseTestResponse
 {
-
     use HasHttpAssertions;
 
     /**
@@ -77,6 +76,22 @@ class TestResponse extends BaseTestResponse
     public function getId(): ?string
     {
         return $this->jsonApi('/data/id');
+    }
+
+    /**
+     * Get the response content.
+     *
+     * @return string
+     */
+    public function getContent(): string
+    {
+        $content = $this->baseResponse->getContent();
+
+        if (false === $content) {
+            return '';
+        }
+
+        return $content;
     }
 
     /**
