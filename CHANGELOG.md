@@ -3,12 +3,12 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
-## Unreleased
+## [1.1.1] - 2022-02-27
 
 ### Fixed
 
-- The Symfony response class can return `false` for the response content. This caused a fatal error when the content
-  was passed to JSON:API assertions - as the assertion methods type-hint the content as a `string` in version 4 of that
+- The Symfony response class can return `false` for the response content. This caused a fatal error when the content was
+  passed to JSON:API assertions - as the assertion methods type-hint the content as a `string` in version 4 of that
   dependency. This has been fixed by adding a `TestResponse::getContent()` method that returns an empty string if the
   Symfony method returns `false`.
 
@@ -26,9 +26,9 @@ All notable changes to this project will be documented in this file. This projec
 
 - The following page assertions will be removed in the next major release. You should use the fluent methods instead to
   assert the resources fetched, meta and links. Deprecated methods are:
-  - `assertFetchedPage()` - use `assertFetchedMany()`, `assertMeta()` and `assertLinks()`.
-  - `assertFetchedPageInOrder()` - use `assertFetchedManyInOrder()`, `assertMeta()` and `assertLinks()`.
-  - `assertFetchedEmptyPage()` - use `assertFetchedNone()`, `assertMeta()` and `assertLinks()`.
+    - `assertFetchedPage()` - use `assertFetchedMany()`, `assertMeta()` and `assertLinks()`.
+    - `assertFetchedPageInOrder()` - use `assertFetchedManyInOrder()`, `assertMeta()` and `assertLinks()`.
+    - `assertFetchedEmptyPage()` - use `assertFetchedNone()`, `assertMeta()` and `assertLinks()`.
 
 ## [1.0.0] - 2021-07-31
 
