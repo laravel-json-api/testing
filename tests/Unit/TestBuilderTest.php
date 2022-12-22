@@ -31,7 +31,8 @@ use LaravelJsonApi\Testing\TestResponse;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class MockTestCase extends TestCase {
+class MockTestCase extends TestCase
+{
     use MakesHttpRequests;
 }
 
@@ -197,6 +198,103 @@ class TestBuilderTest extends TestCase
         $response = $this->builder
             ->expects('posts')
             ->delete('/api/v1/posts', ['X-Foo' => 'Bar']);
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
+    /**
+     * Test using data that is JSON serializable.
+     *
+     * When the data is JSON serializable, we just pass it through as we expect it to be
+     * JSON encoded by the test request.
+     *
+     * @return void
+     */
+    public function testWithJsonSerializableData(): void
+    {
+        $headers = [
+            'X-Foo' => 'Bar',
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $mock = $this->createMock(\JsonSerializable::class);
+        $mock->method('jsonSerialize')->willReturn([
+            'type' => 'posts',
+            'attributes' => [
+                'content' => '...',
+                'slug' => 'hello-world',
+                'title' => 'Hello World!',
+            ],
+        ]);
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('POST', '/api/v1/posts', ['data' => $mock], $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->withData($mock)
+            ->post('/api/v1/posts', ['X-Foo' => 'Bar']);
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
+    public function testWithIterableThatIsNotJsonSerializable(): void
+    {
+        $headers = [
+            'X-Foo' => 'Bar',
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $object = new class implements \IteratorAggregate {
+            public function getIterator(): \Generator
+            {
+                yield from [
+                    ['type' => 'posts', 'id' => '1'],
+                ];
+            }
+        };
+
+        $expected = Collection::make($object)->toArray();
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('POST', '/api/v1/posts', ['data' => $expected], $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->withData($object)
+            ->post('/api/v1/posts', ['X-Foo' => 'Bar']);
+
+        $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
+    }
+
+    public function testWithNullData(): void
+    {
+        $headers = [
+            'X-Foo' => 'Bar',
+            'Accept' => 'application/vnd.api+json',
+            'CONTENT_TYPE' => 'application/vnd.api+json',
+        ];
+
+        $data = null;
+
+        $this->mock
+            ->expects($this->once())
+            ->method('json')
+            ->with('POST', '/api/v1/posts', compact('data'), $headers)
+            ->willReturn(new IlluminateTestResponse($this->response));
+
+        $response = $this->builder
+            ->expects('posts')
+            ->withData($data)
+            ->post('/api/v1/posts', ['X-Foo' => 'Bar']);
 
         $this->assertEquals(new TestResponse($this->response, 'posts'), $response);
     }

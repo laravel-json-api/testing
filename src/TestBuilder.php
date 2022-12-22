@@ -21,12 +21,12 @@ use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use JsonSerializable;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use function array_walk_recursive;
 use function implode;
 use function is_bool;
-use function is_null;
 use function is_scalar;
 
 final class TestBuilder
@@ -236,16 +236,20 @@ final class TestBuilder
     /**
      * Set the data member of the request JSON API document.
      *
-     * @param iterable|null $data
+     * @param JsonSerializable|iterable|null $data
      * @return $this
      */
-    public function withData(?iterable $data): self
+    public function withData($data): self
     {
-        if (is_null($data)) {
+        if ($data === null) {
             return $this->withJson(['data' => null]);
         }
 
-        return $this->withJson(['data' => Collection::make($data)]);
+        if (is_object($data) && !$data instanceof JsonSerializable) {
+            $data = Collection::make($data);
+        }
+
+        return $this->withJson(['data' => $data]);
     }
 
     /**

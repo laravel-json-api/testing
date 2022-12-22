@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+### Fixed
+
+- The `TestBuilder::withData()` method no longer converts the provided data to a `Collection` if it implements
+  the `JsonSerializable` interface. This change was required because Laravel changed how they converted objects to
+  collections. It is not strictly necessary to convert objects that implement the JSON serializable interface, because
+  they will be converted when the test JSON value is JSON encoded. Technically this is a breaking fix if
+  the `TestBuilder` class has been extended. However, this change is being done as a bug fix because the bug was caused
+  by a minor release of Laravel.
+
 ## [1.1.1] - 2022-02-27
 
 ### Fixed
