@@ -568,7 +568,7 @@ class TestBuilderTest extends TestCase
     /**
      * @return array
      */
-    public function idProvider(): array
+    public static function idProvider(): array
     {
         return [
             'int' => [static fn() => 1],
@@ -658,7 +658,7 @@ class TestBuilderTest extends TestCase
     /**
      * @return array
      */
-    public function idsProvider(): array
+    public static function idsProvider(): array
     {
         return [
             'integers' => [static fn() => [1, 2, 3]],

@@ -25,14 +25,14 @@
     "require": {
         "php": "^8.1",
         "ext-json": "*",
-        "cloudcreativity/json-api-testing": "^4.1",
+        "cloudcreativity/json-api-testing": "^4.1|^5.0",
         "illuminate/http": "^10.0",
         "illuminate/support": "^10.0",
         "illuminate/testing": "^10.0"
     },
     "require-dev": {
         "laravel/framework": "^10.0",
-        "phpunit/phpunit": "^9.5.28"
+        "phpunit/phpunit": "^9.5.28|^10.0.7"
     },
     "autoload": {
         "psr-4": {
@@ -49,7 +49,7 @@
             "dev-develop": "2.x-dev"
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
