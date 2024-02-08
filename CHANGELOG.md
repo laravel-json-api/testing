@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased (Laravel 11)
+
+### Changed
+
+- **BREAKING** Package now requires Laravel 11.
+- **BREAKING** Package now requires `cloudcreativity/json-api-testing` version 6.
+- Minimum PHP version is now `8.2`.
+
 ## [2.1.0] - 2023-02-18
 
 ### Added
