@@ -41,7 +41,7 @@ class TestResponse extends BaseTestResponse
      * @param Response $response
      * @param string|null $expectedType
      */
-    public function __construct($response, string $expectedType = null)
+    public function __construct($response, ?string $expectedType = null)
     {
         parent::__construct($response);
 
@@ -116,7 +116,7 @@ class TestResponse extends BaseTestResponse
      * @param string|null $pointer
      * @return Document|mixed
      */
-    public function jsonApi(string $pointer = null)
+    public function jsonApi(?string $pointer = null)
     {
         $document = $this->getDocument();
 
