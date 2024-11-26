@@ -19,7 +19,7 @@ trait MakesJsonApiRequests
      *      the expected resource type.
      * @return TestBuilder
      */
-    protected function jsonApi(string $expects = null): TestBuilder
+    protected function jsonApi(?string $expects = null): TestBuilder
     {
         $tester = new TestBuilder($this);
 
