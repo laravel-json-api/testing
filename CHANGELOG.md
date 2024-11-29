@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Changed
+
+- Bump `cloudcreativity/json-api-testing` package to fix deprecation notices in PHP 8.4.
+
 ## [3.0.1] - 2024-11-26
 
 ### Fixed
