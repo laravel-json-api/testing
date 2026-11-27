@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.3.0] - 2026-11-27
+
+### Changed
+
+- Dropped Laravel 11, as it is end of life and not receiving security updates.
+
 ## [3.2.0] - 2026-03-28
 
 ### Added
