@@ -14,6 +14,7 @@ namespace LaravelJsonApi\Testing\Tests\Unit;
 use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -361,12 +362,22 @@ class TestBuilderTest extends TestCase
 
     public function testWithPayload(): void
     {
-        $payload = ['foo' => 'bar', 'baz' => 'bat'];
+        $payload = [
+            'foo' => 'bar',
+            'baz' => 'bat',
+            'file' => $file = UploadedFile::fake()->image('avatar.jpg'),
+        ];
+
+        $parsed = [
+            'foo' => 'bar',
+            'baz' => 'bat',
+            'file' => get_object_vars($file),
+        ];
 
         $headers = [
             'Accept' => 'application/vnd.api+json',
             'CONTENT_TYPE' => 'application/x-www-form-urlencoded',
-            'CONTENT_LENGTH' => mb_strlen(Arr::query($payload), '8bit'),
+            'CONTENT_LENGTH' => mb_strlen(Arr::query($parsed), '8bit'),
         ];
 
         $this->mock

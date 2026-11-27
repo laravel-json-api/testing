@@ -366,13 +366,13 @@ final class TestBuilder
         $headers = $this->buildHeaders($headers);
 
         if ($this->payload) {
-            $payload = $this->payload->toArray();
             // we need a content length as it is used by the JSON API implementation to determine if there is body.
-            $headers['CONTENT_LENGTH'] = $headers['CONTENT_LENGTH'] ?? mb_strlen(Arr::query($payload), '8bit');
+            $headers['CONTENT_LENGTH'] = $headers['CONTENT_LENGTH'] ??
+                mb_strlen(Arr::query($this->buildPayloadForContentLength()), '8bit');
 
             $response = $this->test->{strtolower($method)}(
                 $uri,
-                $payload,
+                $this->payload->toArray(),
                 $headers
             );
         } else {
@@ -415,6 +415,19 @@ final class TestBuilder
         });
 
         return Arr::query($query);
+    }
+
+    private function buildPayloadForContentLength(): array
+    {
+        $payload = $this->payload->toArray();
+
+        array_walk_recursive($payload, function (&$value) {
+            if (is_object($value)) {
+                $value = get_object_vars($value);
+            }
+        });
+
+        return $payload;
     }
 
     /**
